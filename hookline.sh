@@ -27,19 +27,31 @@ print_help () {
 		elif [ "$2" == "add" ]; then
 			echo "    hookline add <alias> <source> <target>"
 			echo
-			echo "    Adds a new hookline"
+			echo "    Adds a new syncer by alias"
 			echo
 
 		elif [ "$2" == "del" ]; then
 			echo "    hookline del <alias>"
 			echo
-			echo "    Removes a hookline by alias"
+			echo "    Removes a syncer by alias"
+			echo
+
+		elif [ "$2" == "stat" ]; then
+			echo "    hookline stat"
+			echo
+			echo "    Get the status of all syncers"
 			echo
 
 		elif [ "$2" == "start" ]; then
 			echo "    hookline start <alias>"
 			echo
-			echo "    Starts a hookline by alias"
+			echo "    Starts a syncer by alias"
+			echo
+
+		elif [ "$2" == "stop" ]; then
+			echo "    hookline stop <alias>"
+			echo
+			echo "    Stops a syncer by alias"
 			echo
 
 		fi

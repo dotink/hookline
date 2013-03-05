@@ -7,6 +7,8 @@ This is written primarily for my own usage.  It's not very robust and works usin
 ## Requirements
 
 - lsyncd
+- rsync
+- sudo (for install) or `cp ./hookline/hookline.sh /usr/bin/hookline` as root
 - standard GNU utilities
 
 ## Installation
