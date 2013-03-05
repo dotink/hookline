@@ -1,8 +1,9 @@
 # Hookline
 
-A simple wrapper for managing lsyncd instances.  Hookline is useful for developers who usually modify code in a working copy for some version control system but push to a centalized server for testing either individually or amongst other developers.
+A simple wrapper for managing lsyncd instances.  Hookline is useful for developers who usually modify code in a working copy for some version control system but push to a centalized server for testing, scheduled builds, or continuous integration.
 
-This is written primarily for my own usage.  It's not very robust and works using very simple principles.  In my particular case, I work on servers where the dev environments shouldn't and don't contain meta-folders or information for the version control system.  If I use SFTP mounted drives, then I have to pull changes down I save on the server to commit to version control.  If I modify them locally then I have to push them to the server to test and coordinate with other developers.  The `lsyncd` daemon solves the problem I have which is basically that I want to sync changes on save, however, this creates a nice interface with persistent information while avoiding the more complex configuration.  It's a perfect solution, hookline and syncer (get it?).
+It is important to note that unlike traditional SFTP, this will sync regularly and consistently to your development environment.  This is an ideal solution for those who may normally mount and work directly on SFTP, but cannot or would not want the remote copy to also be their working copy.
+
 
 ## Requirements
 
@@ -40,6 +41,12 @@ hookline del <alias>
 hookline del dev.example.com
 ```
 
+### Viewing the status:
+
+```
+hookline stat
+```
+
 ### Starting a syncer:
 
 ```
@@ -60,8 +67,8 @@ hookline stop <alias>
 hookline stop dev.example.com
 ```
 
-### Viewing the status:
+### Following the log:
 
 ```
-hookline stat
+hookline tail
 ```

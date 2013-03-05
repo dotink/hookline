@@ -15,6 +15,7 @@ print_help () {
 		echo "    stat  "
 		echo "    start "
 		echo "    stop  "
+		echo "    tail  "
 		echo
 
 	elif [ "$1" == "help" ]; then
@@ -54,6 +55,12 @@ print_help () {
 			echo "    Stops a syncer by alias"
 			echo
 
+		elif [ "$2" == "tail" ]; then
+			echo "    hookline tail"
+			echo
+			echo "    Tail the log file"
+			echo
+
 		fi
 	fi
 }
@@ -77,9 +84,18 @@ elif [ "$1" == "add" ]; then
 		exit -1
 	fi
 
-	echo "$3" > "$hl_dir/$2.src"
-	echo "$4" > "$hl_dir/$2.dst"
-	echo "0"  > "$hl_dir/$2.pid"
+	opt="{\"-ltus\"}"
+
+	echo "sync {"                    >  "$hl_dir/$2.cfg"
+	echo "    default.rsync,"        >> "$hl_dir/$2.cfg"
+	echo "    delay     = 1,"        >> "$hl_dir/$2.cfg"
+	echo "    source    = \"$3\","   >> "$hl_dir/$2.cfg"
+	echo "    target    = \"$4\","   >> "$hl_dir/$2.cfg"
+	echo "    delete    = false,"    >> "$hl_dir/$2.cfg"
+	echo "    rsyncOpts = $opt"      >> "$hl_dir/$2.cfg"
+	echo "}"                         >> "$hl_dir/$2.cfg"
+
+	echo "0" > "$hl_dir/$2.pid"
 
 elif [ "$1" == "del" ]; then
 	if [ ! "$#" == 2 ]; then
@@ -89,8 +105,7 @@ elif [ "$1" == "del" ]; then
 
 	$0 stop $2
 
-	rm "$hl_dir/$2.src"
-	rm "$hl_dir/$2.dst"
+	rm "$hl_dir/$2.cfg"
 	rm "$hl_dir/$2.pid"
 
 elif [ "$1" == "stat" ]; then
@@ -123,10 +138,7 @@ elif [ "$1" == "start" ]; then
 		exit -1
 	fi
 
-	src=`cat "$hl_dir/$2.src"`
-	dst=`cat "$hl_dir/$2.dst"`
-
-	lsyncd -pidfile "$hl_dir/$2.pid" -rsync "$src" "$dst"
+	lsyncd -pidfile "$hl_dir/$2.pid" -logfile "$hl_dir/hookline.log" "$hl_dir/$2.cfg"
 
 elif [ "$1" == "stop" ]; then
 	if [ ! "$#" == 2 ]; then
@@ -145,6 +157,9 @@ elif [ "$1" == "stop" ]; then
 	fi
 
 	echo "0" > "$hl_dir/$2.pid"
+
+elif [ "$1" == "tail" ]; then
+	tail -f "$hl_dir/hookline.log"
 
 elif [ "$1" == "install" ]; then
 	sudo cp $0 /usr/bin/hookline
