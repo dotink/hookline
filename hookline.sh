@@ -84,16 +84,16 @@ elif [ "$1" == "add" ]; then
 		exit -1
 	fi
 
-	opt="{\"-ltus\"}"
+	opt="{ checksum = true, update = true, times = true, links = true }"
 
-	echo "sync {"                    >  "$hl_dir/$2.cfg"
-	echo "    default.rsync,"        >> "$hl_dir/$2.cfg"
-	echo "    delay     = 1,"        >> "$hl_dir/$2.cfg"
-	echo "    source    = \"$3\","   >> "$hl_dir/$2.cfg"
-	echo "    target    = \"$4\","   >> "$hl_dir/$2.cfg"
-	echo "    delete    = false,"    >> "$hl_dir/$2.cfg"
-	echo "    rsyncOpts = $opt"      >> "$hl_dir/$2.cfg"
-	echo "}"                         >> "$hl_dir/$2.cfg"
+	echo "sync {"                 >  "$hl_dir/$2.cfg"
+	echo "    default.rsync,"     >> "$hl_dir/$2.cfg"
+	echo "    delay  = 1,"        >> "$hl_dir/$2.cfg"
+	echo "    source = \"$3\","   >> "$hl_dir/$2.cfg"
+	echo "    target = \"$4\","   >> "$hl_dir/$2.cfg"
+	echo "    delete = false,"    >> "$hl_dir/$2.cfg"
+	echo "    rsync  = $opt"      >> "$hl_dir/$2.cfg"
+	echo "}"                      >> "$hl_dir/$2.cfg"
 
 	echo "0" > "$hl_dir/$2.pid"
 
