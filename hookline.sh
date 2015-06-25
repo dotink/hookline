@@ -11,6 +11,7 @@ print_help () {
 		echo
 		echo "    help  "
 		echo "    add   "
+		echo "    cat   "
 		echo "    del   "
 		echo "    stat  "
 		echo "    start "
@@ -29,6 +30,12 @@ print_help () {
 			echo "    hookline add <alias> <source> <target>"
 			echo
 			echo "    Adds a new syncer by alias"
+			echo
+
+		elif [ "$2" == "cat" ]; then
+			echo "    hookline cat <alias>"
+			echo
+			echo "    Displays the lsyncd config by alias"
 			echo
 
 		elif [ "$2" == "del" ]; then
@@ -96,6 +103,14 @@ elif [ "$1" == "add" ]; then
 	echo "}"                      >> "$hl_dir/$2.cfg"
 
 	echo "0" > "$hl_dir/$2.pid"
+
+elif [ "$1" == "cat" ]; then
+	if [ ! "$#" == 2 ]; then
+		print_help help $1
+		exit -1
+	fi
+
+	cat "$hl_dir/$2.cfg"
 
 elif [ "$1" == "del" ]; then
 	if [ ! "$#" == 2 ]; then
@@ -166,4 +181,5 @@ elif [ "$1" == "install" ]; then
 	sudo chmod 755 /usr/bin/hookline
 
 fi
+
 
