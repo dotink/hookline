@@ -1,0 +1,11 @@
+#
+# This is an example hookline configuration.  It's just an included bash
+# script.  You can copy it to ~/.hookline/config and change variables.
+#
+# In this example, the config dir is moved to a dropbox folder so that it
+# can be shared across multiple systems.  The runtime directory will be
+# the $hl_dir which is just ~/.hookline
+#
+
+hl_configs_dir="$HOME/Dropbox/Apps/hookline"
+hl_runtime_dir="$hl_dir"

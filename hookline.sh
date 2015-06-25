@@ -73,9 +73,23 @@ print_help () {
 }
 
 hl_dir="$HOME/.hookline"
+hl_configs_dir="$hl_dir"
+hl_runtime_dir="$hl_dir"
+
+if [ -e "$hl_dir/config" ]; then
+	. "$hl_dir/config"
+fi
 
 if [ ! -d "$hl_dir" ]; then
 	mkdir "$hl_dir"
+fi
+
+if [ ! -d "$hl_configs_dir" ]; then
+	mkdir "$hl_configs_dir"
+fi
+
+if [ ! -d "$hl_runtime_dir" ]; then
+	mkdir "$hl_runtime_dir"
 fi
 
 if [ "$#" == 0 ]; then
@@ -93,16 +107,16 @@ elif [ "$1" == "add" ]; then
 
 	opt="{ checksum = true, update = true, times = true, links = true }"
 
-	echo "sync {"                 >  "$hl_dir/$2.cfg"
-	echo "    default.rsync,"     >> "$hl_dir/$2.cfg"
-	echo "    delay  = 1,"        >> "$hl_dir/$2.cfg"
-	echo "    source = \"$3\","   >> "$hl_dir/$2.cfg"
-	echo "    target = \"$4\","   >> "$hl_dir/$2.cfg"
-	echo "    delete = false,"    >> "$hl_dir/$2.cfg"
-	echo "    rsync  = $opt"      >> "$hl_dir/$2.cfg"
-	echo "}"                      >> "$hl_dir/$2.cfg"
+	echo "sync {"                 >  "$hl_configs_dir/$2.cfg"
+	echo "    default.rsync,"     >> "$hl_configs_dir/$2.cfg"
+	echo "    delay  = 1,"        >> "$hl_configs_dir/$2.cfg"
+	echo "    source = \"$3\","   >> "$hl_configs_dir/$2.cfg"
+	echo "    target = \"$4\","   >> "$hl_configs_dir/$2.cfg"
+	echo "    delete = false,"    >> "$hl_configs_dir/$2.cfg"
+	echo "    rsync  = $opt"      >> "$hl_configs_dir/$2.cfg"
+	echo "}"                      >> "$hl_configs_dir/$2.cfg"
 
-	echo "0" > "$hl_dir/$2.pid"
+	echo "0" > "$hl_runtime_dir/$2.pid"
 
 elif [ "$1" == "cat" ]; then
 	if [ ! "$#" == 2 ]; then
@@ -110,7 +124,7 @@ elif [ "$1" == "cat" ]; then
 		exit -1
 	fi
 
-	cat "$hl_dir/$2.cfg"
+	cat "$hl_configs_dir/$2.cfg"
 
 elif [ "$1" == "del" ]; then
 	if [ ! "$#" == 2 ]; then
@@ -120,15 +134,15 @@ elif [ "$1" == "del" ]; then
 
 	$0 stop $2
 
-	rm "$hl_dir/$2.cfg"
-	rm "$hl_dir/$2.pid"
+	rm "$hl_configs_dir/$2.cfg"
+	rm "$hl_runtime_dir/$2.pid"
 
 elif [ "$1" == "stat" ]; then
-	for i in `ls -1 "$hl_dir/"*.pid 2>/dev/null`; do
+	for i in `ls -1 "$hl_runtime_dir/"*.pid 2>/dev/null`; do
 		stat="off"
 
 		aid=`basename "$i" | sed 's/.pid$//'`
-		pid=`cat "$hl_dir/$aid.pid"`
+		pid=`cat "$hl_runtime_dir/$aid.pid"`
 
 		if [ ! "$pid" == "0" ]; then
 			cmd=`ps -l $pid | awk '{ print $14 }' | tail -1`
@@ -140,7 +154,7 @@ elif [ "$1" == "stat" ]; then
 				stat="on"
 
 			else
-				echo "0" > "$hl_dir/$aid.pid"
+				echo "0" > "$hl_runtime_dir/$aid.pid"
 			fi
 		fi
 
@@ -153,7 +167,7 @@ elif [ "$1" == "start" ]; then
 		exit -1
 	fi
 
-	lsyncd -pidfile "$hl_dir/$2.pid" -logfile "$hl_dir/hookline.log" "$hl_dir/$2.cfg"
+	lsyncd -pidfile "$hl_runtime_dir/$2.pid" -logfile "$hl_runtime_dir/hookline.log" "$hl_configs_dir/$2.cfg"
 
 elif [ "$1" == "stop" ]; then
 	if [ ! "$#" == 2 ]; then
@@ -161,7 +175,7 @@ elif [ "$1" == "stop" ]; then
 		exit -1
 	fi
 
-	pid=`cat "$hl_dir/$2.pid"`
+	pid=`cat "$hl_runtime_dir/$2.pid"`
 
 	if [ ! "$pid" == "0" ]; then
 		cmd=`ps -l $pid | awk '{ print $14 }' | tail -1`
@@ -171,10 +185,10 @@ elif [ "$1" == "stop" ]; then
 		fi
 	fi
 
-	echo "0" > "$hl_dir/$2.pid"
+	echo "0" > "$hl_runtime_dir/$2.pid"
 
 elif [ "$1" == "tail" ]; then
-	tail -f "$hl_dir/hookline.log"
+	tail -f "$hl_runtime_dir/hookline.log"
 
 elif [ "$1" == "install" ]; then
 	sudo cp $0 /usr/bin/hookline
