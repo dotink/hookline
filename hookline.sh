@@ -139,13 +139,13 @@ elif [ "$1" == "del" ]; then
 	rm "$hl_runtime_dir/$2.pid"
 
 elif [ "$1" == "stat" ]; then
-	for i in `ls -1 "$hl_runtime_dir/"*.pid 2>/dev/null`; do
+	for i in `ls -1 "$hl_configs_dir/"*.cfg 2>/dev/null`; do
 		stat="off"
 
-		aid=`basename "$i" | sed 's/.pid$//'`
-		pid=`cat "$hl_runtime_dir/$aid.pid"`
+		aid=`basename "$i" | sed 's/.cfg$//'`
+		pid=`cat "$hl_runtime_dir/$aid.pid" 2>/dev/null`
 
-		if [ ! "$pid" == "0" ]; then
+		if [ ! "$pid" == "0" ] && [ ! "$pid" == "" ]; then
 			cmd=`ps -l $pid | awk '{ print $14 }' | tail -1`
 
 			if [ -z "$cmd" ]; then
@@ -196,5 +196,3 @@ elif [ "$1" == "install" ]; then
 	sudo chmod 755 /usr/bin/hookline
 
 fi
-
-
