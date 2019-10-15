@@ -105,7 +105,7 @@ elif [ "$1" == "add" ]; then
 		exit -1
 	fi
 
-	opt="{ checksum = true, update = true, times = false, perms = false, links = true, cvs_exclude = true }"
+	opt="{ checksum = true, update = true, times = false, perms = false, links = true, cvs_exclude = true, _extra = { "--chmod=ugo=rwX" } }"
 
 	echo "sync {"                                 >  "$hl_configs_dir/$2.cfg"
 	echo "    default.rsync,"                     >> "$hl_configs_dir/$2.cfg"
