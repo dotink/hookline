@@ -49,7 +49,6 @@ print_help () {
 			echo
 			echo "    Stops all syncers"
 			echo
-		fi
 
 		elif [ "$2" == "stat" ]; then
 			echo "    hookline stat"
