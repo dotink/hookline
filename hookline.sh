@@ -44,6 +44,13 @@ print_help () {
 			echo "    Removes a syncer by alias"
 			echo
 
+		elif [ "$2" == "killall" ]; then
+			echo "    hookline killall"
+			echo
+			echo "    Stops all syncers"
+			echo
+		fi
+
 		elif [ "$2" == "stat" ]; then
 			echo "    hookline stat"
 			echo
@@ -118,6 +125,21 @@ elif [ "$1" == "add" ]; then
 	echo "}"                                      >> "$hl_configs_dir/$2.cfg"
 
 	echo "0" > "$hl_runtime_dir/$2.pid"
+
+elif [ "$1" == "killall" ]; then
+	for i in `ls -1 "$hl_runtime_dir/"*.pid 2>/dev/null`; do
+		pid=`cat "$i"`
+
+		if [ ! "$pid" == "0" ]; then
+			cmd=`ps -l $pid | awk '{ print $14 }' | tail -1`
+
+			if [ "$cmd" == "lsyncd" ]; then
+				kill $pid
+			fi
+		fi
+
+		echo "0" > "$hl_runtime_dir/$2.pid"
+	done
 
 elif [ "$1" == "cat" ]; then
 	if [ ! "$#" == 2 ]; then

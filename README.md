@@ -67,6 +67,12 @@ hookline stop <alias>
 hookline stop dev.example.com
 ```
 
+### Stopping all syncers:
+
+```
+hookline killall
+```
+
 ### Following the log:
 
 ```
